@@ -2,6 +2,8 @@
 
 set -e
 
+time_start=`date +%s`
+
 if [ "${S3_BUCKET}" == "" ]; then
   echo "You need to set the S3_BUCKET environment variable."
   exit 1
@@ -112,4 +114,7 @@ else
   fi
 fi
 
-echo "SQL backup finished"
+time_end=`date +%s`
+time_diff=`expr $time_end - $time_start`
+
+echo "SQL backup finished in $time_diff seconds"
