@@ -30,6 +30,9 @@ else
   AWS_ARGS="--endpoint-url ${S3_ENDPOINT}"
 fi
 
+mysqldump="nice -n 10 ionice -c2 -n7 /usr/bin/mysqldump"
+gzip="nice -n +10 ionice -c3 gzip"
+
 copy_s3 () {
   SRC_FILE=$1
   DEST_FILE=$2
@@ -78,9 +81,9 @@ if [ ! -z "$(echo $MULTI_FILES | grep -i -E "(yes|true|1)")" ]; then
     DUMP_FILE_TMP="/tmp/${DB}.sql"
     DUMP_FILE="$DUMP_FILE_TMP.gz"
 
-    mysqldump $MYSQL_HOST_OPTS $MYSQLDUMP_OPTIONS --databases $DB > $DUMP_FILE_TMP
+    $mysqldump $MYSQL_HOST_OPTS $MYSQLDUMP_OPTIONS --databases $DB > $DUMP_FILE_TMP
     du -sh $DUMP_FILE_TMP
-    cat $DUMP_FILE_TMP | gzip > $DUMP_FILE
+    cat $DUMP_FILE_TMP | $gzip > $DUMP_FILE
     du -sh $DUMP_FILE
 
     if [ $? == 0 ]; then
@@ -99,9 +102,9 @@ else
   DUMP_FILE_TMP="/tmp/dump.sql"
   DUMP_FILE="$DUMP_FILE_TMP.gz"
 
-  mysqldump $MYSQL_HOST_OPTS $MYSQLDUMP_OPTIONS $MYSQLDUMP_DATABASE > $DUMP_FILE_TMP
+  $mysqldump $MYSQL_HOST_OPTS $MYSQLDUMP_OPTIONS $MYSQLDUMP_DATABASE > $DUMP_FILE_TMP
   du -sh $DUMP_FILE_TMP
-  cat $DUMP_FILE_TMP | gzip > $DUMP_FILE
+  cat $DUMP_FILE_TMP | $gzip > $DUMP_FILE
   du -sh $DUMP_FILE
 
   if [ $? == 0 ]; then
