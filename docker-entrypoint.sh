@@ -91,7 +91,10 @@ if [ ! -z "$(echo $MULTI_FILES | grep -i -E "(yes|true|1)")" ]; then
     du -sh $DUMP_FILE
 
     if [ $? == 0 ]; then
-      S3_FILE="${DB}/${DUMP_START_TIME}.${DB}.sql.gz"
+      S3_FILE="${DB}/${DUMP_START_TIME}.${DB}.sql"
+      if [ "${DISABLE_GZIP}" == "" ]; then
+        S3_FILE="$S3_FILE.gz"
+      fi
 
       copy_s3 $DUMP_FILE $S3_FILE
       clean_s3 "${DB}/"
@@ -116,7 +119,10 @@ else
   du -sh $DUMP_FILE
 
   if [ $? == 0 ]; then
-    S3_FILE="${DUMP_START_TIME}.dump.sql.gz"
+    S3_FILE="${DUMP_START_TIME}.dump.sql"
+    if [ "${DISABLE_GZIP}" == "" ]; then
+      S3_FILE="$S3_FILE.gz"
+    fi
 
     copy_s3 $DUMP_FILE $S3_FILE
     clean_s3
