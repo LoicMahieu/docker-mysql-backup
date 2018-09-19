@@ -21,6 +21,7 @@ Backup MySQL to S3
 
 - `MULTI_FILES` (default: `no`) : Allow to have one file per database if set yes
 - `BACKUP_KEEP` (default: `30`) : Number of backup files to keep
+- `DISABLE_GZIP` (default: `yes`) : Disable GZIP compression
 
 
 ### Test and develop:

@@ -83,7 +83,11 @@ if [ ! -z "$(echo $MULTI_FILES | grep -i -E "(yes|true|1)")" ]; then
 
     $mysqldump $MYSQL_HOST_OPTS $MYSQLDUMP_OPTIONS --databases $DB > $DUMP_FILE_TMP
     du -sh $DUMP_FILE_TMP
-    cat $DUMP_FILE_TMP | $gzip > $DUMP_FILE
+    if [ "${DISABLE_GZIP}" == "" ]; then
+      cat $DUMP_FILE_TMP | $gzip > $DUMP_FILE
+    else
+      cp $DUMP_FILE_TMP $DUMP_FILE
+    fi
     du -sh $DUMP_FILE
 
     if [ $? == 0 ]; then
@@ -104,7 +108,11 @@ else
 
   $mysqldump $MYSQL_HOST_OPTS $MYSQLDUMP_OPTIONS $MYSQLDUMP_DATABASE > $DUMP_FILE_TMP
   du -sh $DUMP_FILE_TMP
-  cat $DUMP_FILE_TMP | $gzip > $DUMP_FILE
+  if [ "${DISABLE_GZIP}" == "" ]; then
+    cat $DUMP_FILE_TMP | $gzip > $DUMP_FILE
+  else
+    cp $DUMP_FILE_TMP $DUMP_FILE
+  fi
   du -sh $DUMP_FILE
 
   if [ $? == 0 ]; then
